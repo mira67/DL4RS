@@ -49,11 +49,11 @@ def train_model(x_train,y_train,x_test,y_test,p):
     elif p['model_id'] == 2:
         model = model_2(x_train,y_train,x_test,y_test,p)
     #evaluate model
-    history = model.fit(train_x, train_y,
+    history = model.fit(x_train, y_train,
               nb_epoch=p['iters'],
               batch_size=p['bsize'],
               verbose = 0,validation_split=0.10)
     #visualize results
-    predicted_mpf = model.predict(test_x)*100
-    test_ytr = test_y*100
-    return predicted, gtest, model
+    predicted_mpf = model.predict(x_test)*100
+    test_ytr = y_test*100
+    return predicted_mpf, test_ytr, model

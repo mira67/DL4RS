@@ -16,12 +16,12 @@ con = MySQLdb.connect(host="localhost",port=3306,user="mira67",passwd="1234",db=
 def pdread(sql):
     try:
         data = pd.read_sql(sql, con)
+        con.close()
+        return data
     except Exception,e:
         print str(e)
         # Rollback in case there is any error
         con.rollback()
-    con.close()
-    return data
 
 #general write with a sql from pandas format
 def pdwrite(sql,table_name,data):

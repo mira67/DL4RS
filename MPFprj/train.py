@@ -6,7 +6,6 @@ Date: Oct.27.2016
 import os
 import logging
 import timeit
-import ConfigParser
 from prjutil import read_config
 from dbaccess import pdread
 from sklearn.cross_validation import train_test_split
@@ -14,9 +13,9 @@ from sklearn.model_selection import KFold
 import numpy as np
 from mpfmodel import train_model
 
-def train_kfold(n_splits,X,Y,p):
+def train_kfold(X,Y,p):
     logging.info('kfold training...')
-    kfold = KFold(n_splits=n_splits, shuffle=True, random_state=1)
+    kfold = KFold(n_splits=p['n_splits'], shuffle=True, random_state=1)
     cvscores = []
     cvr = []
     for train, test in kfold.split(X):
@@ -46,7 +45,11 @@ def train_all(X,Y,p):
     return cvr, cvscores, model
 
 def main():
-    logging.basicConfig(filename='training.log', level=logging.INFO)
+    logging.basicConfig(level=logging.DEBUG,
+                    format='%(asctime)s %(name)-4s %(levelname)-4s %(message)s',
+                    datefmt='%m-%d %H:%M',
+                    filename='training.log',
+                    filemode='w')
     logging.info('Started Training')
     #read config
     p = read_config();
@@ -59,7 +62,7 @@ def main():
     Y = data[:,p['fea_num']:p['fea_num']+p['out_num']]
     #train model
     if p['kfold']:
-        cvr, cvscores, model = train_kfold(n_splits,X,Y,p)
+        cvr, cvscores, model = train_kfold(X,Y,p)
     else:
         cvr, cvscores, model = train_all(X,Y,p)
 

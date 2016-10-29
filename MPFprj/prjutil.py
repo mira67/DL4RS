@@ -3,6 +3,8 @@ utils
 Author: Qi Liu
 """
 
+import ConfigParser
+
 def cfgmap(cfg,section):
     dict1 = {}
     options = cfg.options(section)
@@ -37,7 +39,7 @@ def read_config():
     p['model_id'] = config.getint('Model','model_id')
     p['model_name'] = cfgmap(config,"Model")['model_name']
     p['verbose_on'] = config.getboolean('Model','verbose_on')
-    p['train_mode'] = config.getint('Model','tain_mode')
+    p['kfold'] = config.getint('Model','kfold')
     p['n_splits'] = config.getint('Model','n_splits')
 
     # sql
