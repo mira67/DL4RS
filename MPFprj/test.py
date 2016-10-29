@@ -8,7 +8,9 @@ import timeit
 import ConfigParser
 import numpy as np
 from prjutil import read_config
+from keras.models import load_model
 from dbaccess import pdread,sqlwrite
+import pandas as pd
 
 def model_test(p):
     #load model
@@ -24,7 +26,7 @@ def model_test(p):
     #record to mysql
     df.to_csv(p['result_path']+p['test_result_csv'], sep=',', encoding='utf-8')
     #also write to database
-    sqlwrite(p['test_result_csv'], p['csvtosql'])
+    sqlwrite(p['result_path'], p['test_result_csv'], p['csvtosql'])
 
 def main():
     logging.basicConfig(filename='testing.log', level=logging.INFO)
