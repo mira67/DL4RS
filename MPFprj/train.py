@@ -12,6 +12,7 @@ from sklearn.cross_validation import train_test_split
 from sklearn.model_selection import KFold
 import numpy as np
 from mpfmodel import train_model
+from visdata import vis_train
 
 def train_kfold(X,Y,p):
     logging.info('kfold training...')
@@ -19,13 +20,13 @@ def train_kfold(X,Y,p):
     cvscores = []
     cvr = []
     for train, test in kfold.split(X):
-        predicted, gtest, model = train_model(X[train],Y[train],X[test],Y[test],p)
+        predicted, gtest, model, history = train_model(X[train],Y[train],X[test],Y[test],p)
         score = model.evaluate(X[test], Y[test], batch_size=p['bsize'], verbose=0)
         mpf_mse = np.absolute(np.mean(predicted[:,0],axis=0)-np.mean(gtest[:,0],axis=0))/np.mean(gtest[:,0],axis=0)*100
         r = np.corrcoef(predicted[:,0], gtest[:,0])[1,0]
         cvr.append(r)
         cvscores.append(mpf_mse)
-    return cvr,cvscores,model
+    return cvr, cvscores, predicted, gtest, model, history
 
 def train_all(X,Y,p):
     np.random.seed(1)
@@ -34,7 +35,7 @@ def train_all(X,Y,p):
     X_test = X[~msk]
     Y_train = Y[msk]
     Y_test = Y[~msk]
-    predicted, gtest, model = train_model(X_train,Y_train,X_test,Y_test,p)
+    predicted, gtest, model, history = train_model(X_train,Y_train,X_test,Y_test,p)
     score = model.evaluate(X_test, Y_test, batch_size=p['bsize'], verbose=0)
     mpf_mse = np.absolute(np.mean(predicted[:,0],axis=0)-np.mean(gtest[:,0],axis=0))/np.mean(gtest[:,0],axis=0)*100
     r = np.corrcoef(predicted[:,0], gtest[:,0])[1,0]
@@ -42,7 +43,7 @@ def train_all(X,Y,p):
     cvscores.append(mpf_mse)
     #save current model
     model.save('recent_model_m3.h5')
-    return cvr, cvscores, model
+    return cvr, cvscores, predicted, gtest, model, history
 
 def main():
     logging.basicConfig(level=logging.DEBUG,
@@ -62,9 +63,9 @@ def main():
     Y = data[:,p['fea_num']:p['fea_num']+p['out_num']]
     #train model
     if p['kfold']:
-        cvr, cvscores, model = train_kfold(X,Y,p)
+        cvr, cvscores, predicted, gtest, model, history = train_kfold(X,Y,p)
     else:
-        cvr, cvscores, model = train_all(X,Y,p)
+        cvr, cvscores, predicted, gtest, model, history = train_all(X,Y,p)
 
     #save current model
     model.save(p['model_path']+p['model_name'])
@@ -73,6 +74,11 @@ def main():
     logging.info('Mean Correlation %: ' + str(np.mean(cvr)) + '; Correlation std: ' + str(np.std(cvr)))
 
     os.system('espeak "Congratulations, Your Training is done"')
+
+    #plot to check overfitting, result correlation
+    if p['plot_on']:
+        vis_train(history, predicted, gtest)
+
     logging.info('Training Completed')
 
 if __name__ == '__main__':

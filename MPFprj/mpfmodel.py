@@ -56,4 +56,4 @@ def train_model(x_train,y_train,x_test,y_test,p):
     #visualize results
     predicted_mpf = model.predict(x_test)*100
     test_ytr = y_test*100
-    return predicted_mpf, test_ytr, model
+    return predicted_mpf, test_ytr, model, history
