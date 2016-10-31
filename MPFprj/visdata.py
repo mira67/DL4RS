@@ -44,3 +44,5 @@ def vis_train(history,predicted,gt):
     plt.legend(loc=2)
 
     plt.show()
+
+def vis_test(history,predicted,gt):
