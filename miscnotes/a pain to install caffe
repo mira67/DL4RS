@@ -1,0 +1,32 @@
+Ubuntu 16.04
+Install caffe on CPU only machine
+
+###
+
+sudo apt-get install libopencv-dev python-opencv
+sudo apt-get install libboost-all-dev
+sudo apt-get install libleveldb-dev
+sudo apt-get install libatlas-base-dev
+sudo apt-get install libhdf5-10
+sudo apt-get install libprotobuf-dev protobuf-compiler
+sudo apt install ubuntu-snappy-cli
+sudo apt install libsnappy-dev
+
+for req in $(cat requirements.txt); do sudo pip install $req; done
+
+make all
+make test
+make runtest
+
+###
+import os, sys
+old_path = os.getcwd()
+caffe_root = "path_to/caffe-master"
+os.chdir(caffe_root + "/python")
+import caffe
+os.chdir(old_path)
+###
+
+reference:
+[1] http://caffe.berkeleyvision.org/installation.html
+[2] http://blog.csdn.net/thesby/article/details/50791469
