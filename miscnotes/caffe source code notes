@@ -1,0 +1,59 @@
+Caffe Learning Notes:
+https://www.quora.com/How-do-we-read-the-source-code-of-Caffe
+
+Usage
+step1 :
+data layer
+convert data, LMDB using convert imageset
+
+imagedatalayer
+windowdatalayer
+
+step2:
+define net
+proto.txt file
+
+.prototxt can get ugly for big models
+can use script to generate txt
+
+caffe contains pretrained weights, finetuning
+layer same name: initialized
+
+step3: solver
+
+step4: train
+
+'-gpu -1' for gpu mode
+
+-gpu all for multi-GPU data parallelism, without writing code, caffe will handle
+
+caffe, model zoo, lots of models
+
+Caffe, python interface
+interfacing with numpy
+extract features
+run net forward/backward
+define layers in python with numpy (CPU only)
+
+no much document, read the code
+_caffe.cpp: exports blob layer net and solver classes
+pycaffe.py
+
+pros:
+good for feedforward
+
+cons:
+not good for RNN
+cumbersome for big network, googlenet, resnet
+need to write C++/CUDA for new GPU layers
+
+resNet
+
+concepts:
+blobs
+proto buffer from google
+
+
+Torch:
+C, Lua
+Lua: similar to javascript, good for embedded system

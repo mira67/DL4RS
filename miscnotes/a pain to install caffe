@@ -27,6 +27,10 @@ import caffe
 os.chdir(old_path)
 ###
 
+###
+sys.path.insert(0, caffe_root + "/python")
+###
+
 reference:
 [1] http://caffe.berkeleyvision.org/installation.html
 [2] http://blog.csdn.net/thesby/article/details/50791469
