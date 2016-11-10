@@ -57,3 +57,4 @@ def sqlwrite(path, filename, sql):
          print str(e)
          # Rollback in case there is any error
          con.rollback()
+    con.close()

@@ -32,7 +32,7 @@ def train_kfold(X,Y,p):
     return cvr, cvscores, r2, predicted, gtest, model, history
 
 def train_all(X,Y,p):
-    np.random.seed(1)
+    #np.random.seed(1)
     msk = np.random.rand(len(Y)) < 0.8
     X_train = X[msk]
     X_test = X[~msk]
