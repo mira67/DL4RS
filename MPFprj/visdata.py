@@ -45,4 +45,4 @@ def vis_train(history,predicted,gt):
 
     plt.show()
 
-def vis_test(history,predicted,gt):
+#def vis_test(history,predicted,gt):

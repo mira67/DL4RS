@@ -48,7 +48,7 @@ def sqlwrite(path, filename, sql):
             );
          """
          cursor.execute(sqltable.format(filename[:-4]))
-
+         #record results to file
          sqldata = sql.format(path+filename,filename[:-4])
          print sqldata
          cursor.execute(sqldata)

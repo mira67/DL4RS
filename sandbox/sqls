@@ -50,7 +50,7 @@ sql = """SELECT mod500.year,mod500.month,mod500.day,mod500.qc,
     FROM mod500
     INNER JOIN mod500res
     ON mod500.pid=mod500res.pid"""
-    
+
 #all no cloud
  sql = """SELECT mod500.year,mod500.month,mod500.day,mod500.qc,
     mod500.cloud,mod500res_nocloud.MPF,mod500res_nocloud.IF,mod500res_nocloud.WF
@@ -58,3 +58,35 @@ sql = """SELECT mod500.year,mod500.month,mod500.day,mod500.qc,
     LEFT JOIN mod500
     ON mod500.pid=mod500res_nocloud.pid
     WHERE mod500.cloud = 0 AND mod500.qc = 0"""
+
+
+    train_sql:
+                SELECT b1,b2,b3,b4,b5,b6,b7,MP_F,I_f,W_F FROM Beaufo
+                WHERE MP_F <= 1 AND day != 238 AND day != 244 AND day != 246
+                AND day_label = 'a'
+                UNION
+                SELECT b1,b2,b3,b4,b5,b6,b7,MP_F,I_f,W_F FROM Esiber
+                WHERE MP_F <= 1 AND day != 195
+                AND day_label = 'a'
+                UNION
+                SELECT b1,b2,b3,b4,b5,b6,b7,MP_F,I_f,W_F FROM Cacana
+                WHERE MP_F <= 1 AND day != 181 AND day != 192
+                AND day_label = 'a'
+                UNION
+                SELECT b1,b2,b3,b4,b5,b6,b7,MP_F,I_f,W_F FROM Cafram
+                WHERE MP_F <= 1 AND day != 179
+                AND day_label = 'a';
+
+
+                train_sql:
+                            SELECT b1,b2,b3,b4,b5,b6,b7,MP_F,I_f,W_F FROM Beaufo
+                            WHERE MP_F <= 0.5 AND day != 238 AND day != 244 AND day != 246
+                            UNION
+                            SELECT b1,b2,b3,b4,b5,b6,b7,MP_F,I_f,W_F FROM Esiber
+                            WHERE MP_F <= 0.5 AND day != 195
+                            UNION
+                            SELECT b1,b2,b3,b4,b5,b6,b7,MP_F,I_f,W_F FROM Cacana
+                            WHERE MP_F <= 0.5 AND day != 181 AND day != 192
+                            UNION
+                            SELECT b1,b2,b3,b4,b5,b6,b7,MP_F,I_f,W_F FROM Cafram
+                            WHERE MP_F <= 0.5 AND day != 179;

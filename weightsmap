@@ -1,0 +1,29 @@
+Model 3:
+Root attributes:
+  layer_names: ['dense_13' 'activation_9' 'dense_14' 'activation_10' 'dense_15']
+  activation_10
+    Attributes:
+      weight_names: []
+    Dataset:
+  activation_9
+    Attributes:
+      weight_names: []
+    Dataset:
+  dense_13
+    Attributes:
+      weight_names: ['dense_13_W' 'dense_13_b']
+    Dataset:
+      dense_13_W: (7, 3)
+      dense_13_b: (3,)
+  dense_14
+    Attributes:
+      weight_names: ['dense_14_W' 'dense_14_b']
+    Dataset:
+      dense_14_W: (3, 6)
+      dense_14_b: (6,)
+  dense_15
+    Attributes:
+      weight_names: ['dense_15_W' 'dense_15_b']
+    Dataset:
+      dense_15_W: (6, 3)
+      dense_15_b: (3,)
