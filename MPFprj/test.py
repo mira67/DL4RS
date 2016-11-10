@@ -35,6 +35,7 @@ def main():
     p = read_config();
     logging.info('Testing with Model: ' + str(p['model_id']))
     model_test(p)
+    os.system('espeak "done"')
 
 if __name__ == '__main__':
     logging.info("Testing Time (s): " + str(timeit.timeit("main()", setup="from __main__ import main", number=1)))

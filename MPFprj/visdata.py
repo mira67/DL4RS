@@ -2,10 +2,13 @@
 Visualization Module
 Author: Qi Liu
 """
-
+import os
+import MySQLdb
+import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.gridspec import GridSpec
+
 plt.style.use(u'seaborn-paper')
 
 def vis_train(history,predicted,gt):
@@ -45,4 +48,4 @@ def vis_train(history,predicted,gt):
 
     plt.show()
 
-#def vis_test(history,predicted,gt):
+def vis_test(history,predicted,gt):

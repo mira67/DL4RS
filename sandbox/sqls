@@ -90,3 +90,38 @@ sql = """SELECT mod500.year,mod500.month,mod500.day,mod500.qc,
                             UNION
                             SELECT b1,b2,b3,b4,b5,b6,b7,MP_F,I_f,W_F FROM Cafram
                             WHERE MP_F <= 0.5 AND day != 179;
+
+
+                            sql = """SELECT arr_canadian.year,arr_canadian.month,arr_canadian.day,arr_canadian.qc,
+                            arr_canadian.cloud, arr_canadian.nrow, arr_canadian.ncol, 1110canadianm3.mpf,1110canadianm3.icef,1110canadianm3.wf
+                            FROM 1110canadianm3
+                            LEFT JOIN arr_canadian
+                            ON arr_canadian.pid = 1110canadianm3.pid
+                            WHERE arr_canadian.year > 0
+                            """
+
+                            sql = """SELECT arr_beaufo.year,arr_beaufo.month,arr_beaufo.day,arr_beaufo.qc,
+                            arr_beaufo.cloud, arr_beaufo.nrow, arr_beaufo.ncol, 1110beaufom3.mpf,1110beaufom3.icef,1110beaufom3.wf
+                            FROM 1110beaufom3
+                            LEFT JOIN arr_beaufo
+                            ON arr_beaufo.pid = 1110beaufom3.pid
+                            WHERE arr_beaufo.year > 0 AND arr_beaufo.cloud = 0
+                            """
+
+------------------working version--------------------for model 1 and model 3
+                            train_sql:
+                                        SELECT b1,b2,b3,b4,b5,b6,b7,MP_F,I_f,W_F FROM Beaufo
+                                        WHERE MP_F <= 0.6 AND day != 238 AND day != 244 AND day != 246
+                                        AND day_label = 'a'
+                                        UNION
+                                        SELECT b1,b2,b3,b4,b5,b6,b7,MP_F,I_f,W_F FROM Esiber
+                                        WHERE MP_F <= 0.6 AND day != 195
+                                        AND day_label = 'a'
+                                        UNION
+                                        SELECT b1,b2,b3,b4,b5,b6,b7,MP_F,I_f,W_F FROM Cacana
+                                        WHERE MP_F <= 0.6 AND day != 181 AND day != 192
+                                        AND day_label = 'a'
+                                        UNION
+                                        SELECT b1,b2,b3,b4,b5,b6,b7,MP_F,I_f,W_F FROM Cafram
+                                        WHERE MP_F <= 0.6 AND day != 179
+                                        AND day_label = 'a';
