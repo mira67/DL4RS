@@ -40,8 +40,15 @@ def sqlwrite(path, filename, sql):
          cursor = con.cursor()
          #create table first
          sqltable = """
-            CREATE TABLE {}
+            CREATE TABLE IF NOT EXISTS {}
             ( pid int(11),
+              year int,
+              month int,
+              day int,
+              nrow int,
+              ncol int,
+              qc int,
+              cloud int,
               mpf double,
               icef double,
               wf double

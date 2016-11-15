@@ -38,6 +38,7 @@ def read_config():
     # model
     p['model_id'] = config.getint('Model','model_id')
     p['model_name'] = cfgmap(config,"Model")['model_name']
+    p['model_name2'] = cfgmap(config,"Model")['model_name2']
     p['verbose_on'] = config.getboolean('Model','verbose_on')
     p['kfold'] = config.getint('Model','kfold')
     p['n_splits'] = config.getint('Model','n_splits')

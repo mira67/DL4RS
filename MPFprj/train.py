@@ -15,6 +15,8 @@ import numpy as np
 from mpfmodel import train_model
 from visdata import vis_train
 from sklearn.metrics import r2_score
+import math
+import matplotlib.mlab as mlab
 
 def train_kfold(X,Y,p):
     logging.info('kfold training...')
@@ -64,14 +66,24 @@ def main():
     #get train/validation/test data
     df = pdread(p['train_sql'])
     df = df.replace(-9999, 0)
-    basen = 3
-    #df['day'][(df['day'] > 213)] = 0.2
-    #df['day'][(df['day'] < 213) & (df['day'] > 152)] = 0
-    #df['day'] = np.power(df['day'], basen)/np.power(274,basen)
-    df['day'] = df['day']/274.0
-    #np.power(df['day'], basen)/np.power(274,basen)#df['day']/274.0#scale by largest day
-    #df = (df - df.mean()) / (df.max() - df.min())
-    df.head()
+    # basen = 2
+    # alpha = 0.8
+    # beta = 0
+    # julian_m = 197.5
+    #
+    # #gaussian kernel method
+    # mu = 0
+    # variance = 0.5
+    # sigma = math.sqrt(variance)
+    # # mayfilter = df['day']
+    # # mayfilter[mayfilter<=153] = 0.5
+    # # mayfilter[mayfilter>153] = 0
+    # df['day'][df['day']>213] = alpha*mlab.normpdf((df['day'][df['day']>213]-julian_m)/31, mu, sigma) + beta
+    # df['day'][df['day']<=213] = 1
+    #
+    # df['b1'] = df['day']*df['b1']
+
+    print df.head()
     data = df.as_matrix()
     X = data[:,0:p['fea_num']]
     #X[:,p['fea_num']-1] = float(X[:,p['fea_num']-1])/274.0
@@ -85,7 +97,7 @@ def main():
         cvr, cvscores, r2, predicted, gtest, model, history = train_all(X,Y,p)
 
     #save current model
-    model.save(p['model_path']+p['model_name'])
+    model.save(p['model_path']+p['model_name2'])
     model.save_weights(p['model_path']+'weights.h5')
 
     logging.info('Mean MSE %: ' + str(np.mean(cvscores)) + '; MSE std: ' + str(np.std(cvscores)))

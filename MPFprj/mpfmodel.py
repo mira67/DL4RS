@@ -81,29 +81,32 @@ def model_4(x_train,y_train,x_test,y_test,p):
     model = Sequential()
     model.add(Dense(7, input_dim=p['fea_num']))
     model.add(Activation('tanh'))
-    model.add(Dropout(0.2))
-    model.add(Dense(10))
+
+    model.add(Dense(6))
     model.add(Activation('tanh'))
-    model.add(Dropout(0.2))
-    model.add(Dense(10))
-    model.add(Activation('tanh'))
-    model.add(Dropout(0.2))
+
     model.add(Dense(p['out_num']))
     #model.add(Activation('relu'))
 
     model.compile(loss='mean_squared_error', optimizer='adam')
     return model
 
-def model_5(x_train,y_train,x_test,y_test,p):
+def model_5(x_train,y_train,x_test,y_test,p):#trained for model_567
     model = Sequential()
-    model.add(Dense(3, input_dim=p['fea_num']))
+    model.add(Dense(7, input_dim=p['fea_num']))
     model.add(Activation('tanh'))
 
-    model.add(Dense(6))
+    model.add(Dense(10))
     model.add(Activation('tanh'))
+    model.add(Dropout(0.2))
+    model.add(Dense(10))
+    model.add(Activation('tanh'))
+    model.add(Dropout(0.2))
+    # model.add(Dense(6))
+    # model.add(Activation('tanh'))
 
     model.add(Dense(p['out_num']))
-    #model.add(Activation('sigmoid'))
+    #model.add(Activation('relu'))
     #sgd = SGD(lr=0.001, clipnorm=1.)
     model.compile(loss='mean_squared_error', optimizer='adam')
 

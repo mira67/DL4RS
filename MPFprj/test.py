@@ -19,11 +19,13 @@ def model_test(p):
     df = pdread(p['test_sql'])
     df = df.replace(-9999, 0)
     #df['julian'][(df['julian'] < 213) & (df['julian'] > 152)] = 0.1
-    df['julian'] = df['julian']/274.0#scale by largest day
-    basen = 3
-    #df['day'][(df['day'] > 213)] = 0.2
-    #df['day'][(df['day'] < 213) & (df['day'] > 152)] = 0
-    #df['julian'] = np.power(df['julian'], basen)/np.power(274,basen)
+    basen = 2
+    julian_m = 197.5
+    alpha = 10
+    beta = 0.01
+
+    #df['julian'] = alpha*np.power(df['julian']-julian_m, basen)/np.power(274,basen)+beta
+
     print df.head(n=5)
     #df = minmaxscaler(df)
     data = df.as_matrix()
@@ -38,13 +40,45 @@ def model_test(p):
     #also write to database
     sqlwrite(p['result_path'], p['test_result_csv'], p['csvtosql'])
 
+def dual_model(p):
+    #load model
+    model = load_model(p['model_path']+p['model_name'])
+    #model2 = load_model(p['model_path']+p['model_name2'])
+
+    df = pdread(p['test_sql'])
+    df = df.replace(-9999, 0)
+    #print df.head(n=5)
+
+    data = df.as_matrix()
+    attr_n = 7
+    attr = data[:,0:attr_n]#year,month,day,nrow,ncol
+    X_predict = data[:,attr_n:attr_n+p['fea_num']]
+    d_month = data[:,p['fea_num']]
+
+    #X_predict = normalize(X_predict,norm='l2',axis=0)
+    print X_predict[1:attr_n,:]
+
+    Y_predict = model.predict(X_predict)*100
+
+    final_data = np.concatenate((attr,Y_predict), axis=1)
+
+    print final_data.shape
+
+    df = pd.DataFrame(final_data, columns=['year','month','day','nrow','ncol','qc','cloud','MPF', 'IF', 'WF'])
+    #record to mysql
+    with open(p['result_path']+p['test_result_csv'], 'a') as f:
+        df.to_csv(f, sep=',', encoding='utf-8',header=False)
+    #also write to database
+    sqlwrite(p['result_path'], p['test_result_csv'], p['csvtosql'])
+
 def main():
     logging.basicConfig(filename='testing.log', level=logging.INFO)
     logging.info('Started Testing')
     #read config
     p = read_config();
     logging.info('Testing with Model: ' + str(p['model_id']))
-    model_test(p)
+    #model_test(p)
+    dual_model(p)
     #sqlwrite(p['result_path'], p['test_result_csv'], p['csvtosql'])
     os.system('espeak "done"')
 
