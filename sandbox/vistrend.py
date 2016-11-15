@@ -10,12 +10,10 @@ from keras.utils.visualize_util import model_to_dot
 #each year a plot, and calcualte a yearly mean to compare with nature
 print("visualize results")
 con = MySQLdb.connect(host="localhost",port=3306,user="mira67",passwd="1234",db="nsidcgt")
-sql = """SELECT arr_esiber.year,arr_esiber.month,arr_esiber.day,arr_esiber.qc,
-arr_esiber.cloud, arr_esiber.nrow, arr_esiber.ncol, 1115esiberm5s.mpf,1115esiberm5s.icef,1115esiberm5s.wf
-FROM 1115esiberm5s
-LEFT JOIN arr_esiber
-ON arr_esiber.pid = 1115esiberm5s.pid
-WHERE arr_esiber.year < 2002 AND arr_esiber.cloud = 0
+sql = """SELECT year,month,day,nrow,ncol,qc,
+cloud,mpf,icef,wf
+FROM esiber1115_dm
+WHERE esiber1115_dm.year < 2012 AND esiber1115_dm.cloud = 0
 """
 
 df = pd.read_sql(sql, con)
