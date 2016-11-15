@@ -10,6 +10,7 @@ from prjutil import read_config
 from dbaccess import pdread
 from sklearn.cross_validation import train_test_split
 from sklearn.model_selection import KFold
+from sklearn.preprocessing import normalize
 import numpy as np
 from mpfmodel import train_model
 from visdata import vis_train
@@ -63,8 +64,19 @@ def main():
     #get train/validation/test data
     df = pdread(p['train_sql'])
     df = df.replace(-9999, 0)
+    basen = 3
+    #df['day'][(df['day'] > 213)] = 0.2
+    #df['day'][(df['day'] < 213) & (df['day'] > 152)] = 0
+    #df['day'] = np.power(df['day'], basen)/np.power(274,basen)
+    df['day'] = df['day']/274.0
+    #np.power(df['day'], basen)/np.power(274,basen)#df['day']/274.0#scale by largest day
+    #df = (df - df.mean()) / (df.max() - df.min())
+    df.head()
     data = df.as_matrix()
     X = data[:,0:p['fea_num']]
+    #X[:,p['fea_num']-1] = float(X[:,p['fea_num']-1])/274.0
+    #X = normalize(X,norm='l2',axis=0)
+
     Y = data[:,p['fea_num']:p['fea_num']+p['out_num']]
     #train model
     if p['kfold']:

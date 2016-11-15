@@ -11,15 +11,25 @@ from prjutil import read_config
 from keras.models import load_model
 from dbaccess import pdread,sqlwrite
 import pandas as pd
+from sklearn.preprocessing import normalize
 
 def model_test(p):
     #load model
     model = load_model(p['model_path']+p['model_name'])
     df = pdread(p['test_sql'])
     df = df.replace(-9999, 0)
+    #df['julian'][(df['julian'] < 213) & (df['julian'] > 152)] = 0.1
+    df['julian'] = df['julian']/274.0#scale by largest day
+    basen = 3
+    #df['day'][(df['day'] > 213)] = 0.2
+    #df['day'][(df['day'] < 213) & (df['day'] > 152)] = 0
+    #df['julian'] = np.power(df['julian'], basen)/np.power(274,basen)
+    print df.head(n=5)
     #df = minmaxscaler(df)
     data = df.as_matrix()
     X_predict = data[:,0:]
+    X_predict = normalize(X_predict,norm='l2',axis=0)
+    # print X_predict[1:5,:]
     #predict with model
     Y_predict = model.predict(X_predict)*100
     df = pd.DataFrame(Y_predict, columns=['MPF', 'IF', 'WF'])
@@ -35,6 +45,7 @@ def main():
     p = read_config();
     logging.info('Testing with Model: ' + str(p['model_id']))
     model_test(p)
+    #sqlwrite(p['result_path'], p['test_result_csv'], p['csvtosql'])
     os.system('espeak "done"')
 
 if __name__ == '__main__':

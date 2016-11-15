@@ -6,7 +6,7 @@ Author: Qi Liu
 
 import numpy as np
 from keras.models import Sequential
-from keras.layers import Dense, Dropout, Activation, Flatten
+from keras.layers import Dense, Dropout, Activation, Flatten, Convolution1D,MaxPooling1D
 from keras.utils import np_utils
 from keras.optimizers import Adam
 from keras.regularizers import l2, activity_l2
@@ -30,6 +30,7 @@ def model_1(x_train,y_train,x_test,y_test,p):
     model.add(Activation('tanh'))
     model.add(Dropout(0.2))
     model.add(Dense(p['out_num']))
+    model.add(Activation('softmax'))
     #sgd = SGD(lr=0.001, clipnorm=1.)
     #adam = Adam(lr=0.001, beta_1=0.9, beta_2=0.999, epsilon=1e-08)
     model.compile(loss='mean_squared_error', optimizer='adam')
@@ -62,13 +63,50 @@ def model_3(x_train,y_train,x_test,y_test,p):
     model.add(Dense(10))
     model.add(Activation('tanh'))
     model.add(Dropout(0.2))
+    model.add(Dense(8))
+    model.add(Activation('tanh'))
+    model.add(Dropout(0.2))
+    model.add(Dense(10))
+    model.add(Activation('sigmoid'))
+    model.add(Dropout(0.2))
+    model.add(Dense(p['out_num']))
+    #model.add(Activation('softmax'))
+    #model.add(Activation('relu'))
+    #sgd = SGD(lr=0.001, clipnorm=1.)
+    model.compile(loss='mean_squared_error', optimizer='adam')
+    return model
+
+def model_4(x_train,y_train,x_test,y_test,p):
+    model = Sequential()
+    model = Sequential()
+    model.add(Dense(7, input_dim=p['fea_num']))
+    model.add(Activation('tanh'))
+    model.add(Dropout(0.2))
+    model.add(Dense(10))
+    model.add(Activation('tanh'))
+    model.add(Dropout(0.2))
     model.add(Dense(10))
     model.add(Activation('tanh'))
     model.add(Dropout(0.2))
     model.add(Dense(p['out_num']))
-    model.add(Activation('relu'))
+    #model.add(Activation('relu'))
+
+    model.compile(loss='mean_squared_error', optimizer='adam')
+    return model
+
+def model_5(x_train,y_train,x_test,y_test,p):
+    model = Sequential()
+    model.add(Dense(3, input_dim=p['fea_num']))
+    model.add(Activation('tanh'))
+
+    model.add(Dense(6))
+    model.add(Activation('tanh'))
+
+    model.add(Dense(p['out_num']))
+    #model.add(Activation('sigmoid'))
     #sgd = SGD(lr=0.001, clipnorm=1.)
     model.compile(loss='mean_squared_error', optimizer='adam')
+
     return model
 
 def train_model(x_train,y_train,x_test,y_test,p):
@@ -78,6 +116,10 @@ def train_model(x_train,y_train,x_test,y_test,p):
         model = model_2(x_train,y_train,x_test,y_test,p)
     elif p['model_id'] == 3:
         model = model_3(x_train,y_train,x_test,y_test,p)
+    elif p['model_id'] == 4:
+        model = model_4(x_train,y_train,x_test,y_test,p)
+    elif p['model_id'] == 5:
+        model = model_5(x_train,y_train,x_test,y_test,p)
     #evaluate model
     history = model.fit(x_train, y_train,
               nb_epoch=p['iters'],
