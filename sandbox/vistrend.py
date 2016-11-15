@@ -10,12 +10,12 @@ from keras.utils.visualize_util import model_to_dot
 #each year a plot, and calcualte a yearly mean to compare with nature
 print("visualize results")
 con = MySQLdb.connect(host="localhost",port=3306,user="mira67",passwd="1234",db="nsidcgt")
-sql = """SELECT arr_beaufo.year,arr_beaufo.month,arr_beaufo.day,arr_beaufo.qc,
-arr_beaufo.cloud, arr_beaufo.nrow, arr_beaufo.ncol, 1115beaufom5.mpf,1115beaufom5.icef,1115beaufom5.wf
-FROM 1115beaufom5
-LEFT JOIN arr_beaufo
-ON arr_beaufo.pid = 1115beaufom5.pid
-WHERE arr_beaufo.year < 2012 AND arr_beaufo.cloud = 0
+sql = """SELECT arr_canadian.year,arr_canadian.month,arr_canadian.day,arr_canadian.qc,
+arr_canadian.cloud, arr_canadian.nrow, arr_canadian.ncol, 1115canadianm5.mpf,1115canadianm5.icef,1115canadianm5.wf
+FROM 1115canadianm5
+LEFT JOIN arr_canadian
+ON arr_canadian.pid = 1115canadianm5.pid
+WHERE arr_canadian.year < 2012 AND arr_canadian.cloud = 0
 """
 
 df = pd.read_sql(sql, con)

@@ -28,7 +28,7 @@ def model_test(p):
     #df = minmaxscaler(df)
     data = df.as_matrix()
     X_predict = data[:,0:]
-    X_predict = normalize(X_predict,norm='l2',axis=0)
+    #X_predict = normalize(X_predict,norm='l2',axis=0)
     # print X_predict[1:5,:]
     #predict with model
     Y_predict = model.predict(X_predict)*100
