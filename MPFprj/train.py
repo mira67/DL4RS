@@ -85,6 +85,7 @@ def main():
 
     print df.head()
     data = df.as_matrix()
+    print('data size: ', data.shape)
     X = data[:,0:p['fea_num']]
     #X = normalize(X,norm='l2',axis=0)
 
