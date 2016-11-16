@@ -17,6 +17,7 @@ def vis_train(history,predicted,gt):
     plt.figure(1)
     gs = GridSpec(2, 2)
     plt.subplot(gs[0, :])
+
     plt.plot(history.history['loss'])
     plt.plot(history.history['val_loss'])
     plt.ylabel('loss',fontsize=fs, color='black')

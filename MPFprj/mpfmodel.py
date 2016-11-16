@@ -67,7 +67,7 @@ def model_3(x_train,y_train,x_test,y_test,p):
     model.add(Activation('tanh'))
     model.add(Dropout(0.2))
     model.add(Dense(10))
-    model.add(Activation('sigmoid'))
+    model.add(Activation('tanh'))
     model.add(Dropout(0.2))
     model.add(Dense(p['out_num']))
 

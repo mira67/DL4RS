@@ -103,12 +103,18 @@ def main():
     logging.info('Mean Correlation %: ' + str(np.mean(cvr)) + '; Correlation std: ' + str(np.std(cvr)))
     logging.info('R-Squared %: ' + str(np.mean(r2)) + '; Correlation std: ' + str(np.std(r2)))
 
-    os.system('espeak "done"')
+    #record history to list
+    import csv
+    from itertools import izip
+    with open('train_history.csv', 'wb') as f:
+        writer = csv.writer(f)
+        writer.writerows(izip(history.history['loss'], history.history['val_loss']))
 
     #plot to check overfitting, result correlation
     if p['plot_on']:
         vis_train(history, predicted, gtest)
 
+    os.system('espeak "done"')
     logging.info('Training Completed')
 
 if __name__ == '__main__':
