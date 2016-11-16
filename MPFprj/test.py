@@ -1,6 +1,7 @@
 """
 Test Main
-Author: Qi Liu
+Update config.ini for model and data
+Author: Qi Liu, 11/2016
 """
 import os
 import logging

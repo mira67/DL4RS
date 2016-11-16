@@ -1,7 +1,7 @@
 """
 Deep NN Models
-Add customized models in this file
-Author: Qi Liu
+Add customized models in this file,also update train_model for model selection
+Author: Qi Liu, 11/2016
 """
 
 import numpy as np
@@ -14,7 +14,7 @@ from keras.constraints import maxnorm
 """
 Models
 """
-# basic dense serial NN
+
 def model_1(x_train,y_train,x_test,y_test,p):
     model = Sequential()
     model.add(Dense(100, input_dim=p['fea_num']))
@@ -31,7 +31,7 @@ def model_1(x_train,y_train,x_test,y_test,p):
     model.add(Dropout(0.2))
     model.add(Dense(p['out_num']))
     model.add(Activation('softmax'))
-    #sgd = SGD(lr=0.001, clipnorm=1.)
+
     #adam = Adam(lr=0.001, beta_1=0.9, beta_2=0.999, epsilon=1e-08)
     model.compile(loss='mean_squared_error', optimizer='adam')
     return model
@@ -50,7 +50,7 @@ def model_2(x_train,y_train,x_test,y_test,p):
     model.add(Dense(10))
     model.add(Activation('tanh'))
     model.add(Dense(p['out_num']))
-    #sgd = SGD(lr=0.001, clipnorm=1.)#0.9,0.999
+
     #adam = Adam(lr=0.01, beta_1=0.9, beta_2=0.999, epsilon=1e-08)
     model.compile(loss='mean_squared_error', optimizer='adam')
     return model
@@ -70,9 +70,7 @@ def model_3(x_train,y_train,x_test,y_test,p):
     model.add(Activation('sigmoid'))
     model.add(Dropout(0.2))
     model.add(Dense(p['out_num']))
-    #model.add(Activation('softmax'))
-    #model.add(Activation('relu'))
-    #sgd = SGD(lr=0.001, clipnorm=1.)
+
     model.compile(loss='mean_squared_error', optimizer='adam')
     return model
 

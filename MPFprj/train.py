@@ -1,21 +1,21 @@
 """
-Train Main
+Train Main, configure config.ini for data/model parameters
 Author: Qi Liu
-Date: Oct.27.2016
+Date: 10/2016, updated 11/2016
 """
 import os
-import logging
+import math
 import timeit
+import logging
 from prjutil import read_config
 from dbaccess import pdread
+import numpy as np
 from sklearn.cross_validation import train_test_split
 from sklearn.model_selection import KFold
 from sklearn.preprocessing import normalize
-import numpy as np
+from sklearn.metrics import r2_score
 from mpfmodel import train_model
 from visdata import vis_train
-from sklearn.metrics import r2_score
-import math
 import matplotlib.mlab as mlab
 
 def train_kfold(X,Y,p):
@@ -35,7 +35,7 @@ def train_kfold(X,Y,p):
     return cvr, cvscores, r2, predicted, gtest, model, history
 
 def train_all(X,Y,p):
-    #np.random.seed(1)
+    #np.random.seed(1)#for repeating results
     msk = np.random.rand(len(Y)) < 0.8
     X_train = X[msk]
     X_test = X[~msk]
@@ -86,7 +86,6 @@ def main():
     print df.head()
     data = df.as_matrix()
     X = data[:,0:p['fea_num']]
-    #X[:,p['fea_num']-1] = float(X[:,p['fea_num']-1])/274.0
     #X = normalize(X,norm='l2',axis=0)
 
     Y = data[:,p['fea_num']:p['fea_num']+p['out_num']]
@@ -97,7 +96,7 @@ def main():
         cvr, cvscores, r2, predicted, gtest, model, history = train_all(X,Y,p)
 
     #save current model
-    model.save(p['model_path']+p['model_name2'])
+    model.save(p['model_path']+p['model_name'])
     model.save_weights(p['model_path']+'weights.h5')
 
     logging.info('Mean MSE %: ' + str(np.mean(cvscores)) + '; MSE std: ' + str(np.std(cvscores)))

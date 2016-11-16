@@ -1,3 +1,9 @@
+"""
+Analyze importance of input feature
+Good for simple model
+
+Author: Qi Liu, 11/2016
+"""
 import os
 import numpy as np
 from keras.models import load_model

@@ -1,6 +1,7 @@
 """
 utils
-Author: Qi Liu
+configure file parser
+Author: Qi Liu, 11/2016
 """
 
 import ConfigParser

@@ -1,4 +1,6 @@
-"""Analyze weights
+"""Load and analyze weights
+Obtained from https://github.com/fchollet/keras/issues/91
+Thanks, mthrok
 Qi Liu
 """
 
