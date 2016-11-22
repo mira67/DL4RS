@@ -15,14 +15,16 @@ from dsphelper import savitzky_golay
 plt.style.use(u'seaborn-paper')
 
 #each year a plot, and calcualte a yearly mean to compare with nature
-df = pd.read_sql(sql, con)
-print df.shape"visualize results")
+print("visualize results")
 con = MySQLdb.connect(host="localhost",port=3306,user="mira67",passwd="1234",db="nsidcgt")
 sql = """SELECT year,month,day,nrow,ncol,qc,
 cloud,mpf,icef,wf
 FROM cafram1115_dm
 WHERE cafram1115_dm.year < 2012 AND cafram1115_dm.cloud = 0
 """
+
+df = pd.read_sql(sql, con)
+print df.shape
 #group by year/month to compute MPF/IF/WF mean
 
 grouped = df.groupby(['month','day','nrow','ncol'],as_index=False)
@@ -91,7 +93,7 @@ ax.xaxis.set_minor_locator(months)
 plt.ylabel('Melt Pond Fraction (%)',fontsize=fs, color='black')
 plt.xlabel('Date (mm-dd)',fontsize=fs, color='black')
 plt.tick_params(axis='both', which='major', labelsize=fs)
-plt.title('Cafram Sea MPF Trend',fontsize=fs)
+plt.title('Canadian Sea MPF Trend',fontsize=fs)
 fig.autofmt_xdate()
 ax.grid(True)
 ax.legend(loc='upper right',prop={'size':fs})

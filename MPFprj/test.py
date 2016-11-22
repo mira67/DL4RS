@@ -12,6 +12,7 @@ from prjutil import read_config
 from keras.models import load_model
 from dbaccess import pdread,sqlwrite
 import pandas as pd
+import glob
 from sklearn.preprocessing import normalize
 
 def model_test(p):
@@ -72,6 +73,35 @@ def dual_model(p):
     #also write to database
     sqlwrite(p['result_path'], p['test_result_csv'], p['csvtosql'])
 
+def arctic_test(p):
+    #load model
+    model = load_model(p['model_path']+p['model_name'])
+    #load test files
+    tlist = glob.glob(p['test_path']+'*.csv')
+    for tf in tlist:
+        df = pd.read_csv(tf, sep=",", skiprows=1, names = ["year","month","day","nrow","ncol","qc","cloud","b1","b2","b3","b4","b5","b6","b7"])
+        nsplit = os.path.basename(tf).split('.')
+        print nsplit[0]
+        df = df.replace(-9999, 0)
+        #run through model
+        data = df.as_matrix()
+        attr_n = 7
+        X_predict = data[:,attr_n:attr_n+p['fea_num']]
+        #print X_predict[1:attr_n,:]
+        Y_predict = model.predict(X_predict)*100
+
+        final_data = np.concatenate((data,Y_predict), axis=1)
+
+        #print final_data.shape
+
+        df = pd.DataFrame(final_data, columns=["year","month","day","nrow","ncol","qc","cloud","b1","b2","b3","b4","b5","b6","b7","mpf","if","wf"])
+        df['mpf'][df['b1'] < -2] = -9999
+        df['if'][df['b1'] < -2] = -9999
+        df['wf'][df['b1'] < -2] = -9999
+        #record to mysql
+        with open(p['result_path']+os.path.basename(tf), 'a') as f:
+            df.to_csv(f, sep=',', encoding='utf-8',index=False)
+
 def main():
     logging.basicConfig(filename='testing.log', level=logging.INFO)
     logging.info('Started Testing')
@@ -79,7 +109,8 @@ def main():
     p = read_config();
     logging.info('Testing with Model: ' + str(p['model_id']))
     #model_test(p)
-    dual_model(p)
+    #dual_model(p)
+    arctic_test(p)
     #sqlwrite(p['result_path'], p['test_result_csv'], p['csvtosql'])
     os.system('espeak "done"')
 
