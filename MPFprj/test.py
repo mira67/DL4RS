@@ -77,7 +77,7 @@ def dual_model(p):
 
 def fast_test(p):
     #create processing
-    pc = multiprocessing.Pool()
+    pc = multiprocessing.Pool(processes = 1)
     #load test files
     tlist = glob.glob(p['test_path']+'*.csv')
     for tf in tlist:
