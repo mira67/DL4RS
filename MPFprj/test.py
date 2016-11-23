@@ -14,6 +14,8 @@ from dbaccess import pdread,sqlwrite
 import pandas as pd
 import glob
 from sklearn.preprocessing import normalize
+#
+import multiprocessing
 
 def model_test(p):
     #load model
@@ -73,34 +75,42 @@ def dual_model(p):
     #also write to database
     sqlwrite(p['result_path'], p['test_result_csv'], p['csvtosql'])
 
-def arctic_test(p):
+def fast_test(p):
     #load model
     model = load_model(p['model_path']+p['model_name'])
+    #create processing
+    pc = multiprocessing.Pool()
     #load test files
     tlist = glob.glob(p['test_path']+'*.csv')
     for tf in tlist:
-        df = pd.read_csv(tf, sep=",", skiprows=1, names = ["year","month","day","nrow","ncol","qc","cloud","b1","b2","b3","b4","b5","b6","b7"])
-        nsplit = os.path.basename(tf).split('.')
-        print nsplit[0]
-        df = df.replace(-9999, 0)
-        #run through model
-        data = df.as_matrix()
-        attr_n = 7
-        X_predict = data[:,attr_n:attr_n+p['fea_num']]
-        #print X_predict[1:attr_n,:]
-        Y_predict = model.predict(X_predict)*100
+        # launch a process for each file (ish).
+        # The result will be approximately one process per CPU core available.
+        pc.apply_async(arctic_test, [tf,p])
 
-        final_data = np.concatenate((data,Y_predict), axis=1)
+    pc.close()
+    pc.join() # Wait for all child processes to close.
 
-        #print final_data.shape
+def arctic_test(tf,p):
+    df = pd.read_csv(tf, sep=",", skiprows=1, names = ["year","month","day","nrow","ncol","qc","cloud","b1","b2","b3","b4","b5","b6","b7"])
+    nsplit = os.path.basename(tf).split('.')
+    print nsplit[0]
+    df = df.replace(-9999, 0)
+    #run through model
+    data = df.as_matrix()
+    attr_n = 7
+    X_predict = data[:,attr_n:attr_n+p['fea_num']]
+    #print X_predict[1:attr_n,:]
+    Y_predict = model.predict(X_predict)*100
 
-        df = pd.DataFrame(final_data, columns=["year","month","day","nrow","ncol","qc","cloud","b1","b2","b3","b4","b5","b6","b7","mpf","if","wf"])
-        df['mpf'][df['b1'] < -2] = -9999
-        df['if'][df['b1'] < -2] = -9999
-        df['wf'][df['b1'] < -2] = -9999
-        #record to mysql
-        with open(p['result_path']+os.path.basename(tf), 'a') as f:
-            df.to_csv(f, sep=',', encoding='utf-8',index=False)
+    final_data = np.concatenate((data,Y_predict), axis=1)
+
+    df = pd.DataFrame(final_data, columns=["year","month","day","nrow","ncol","qc","cloud","b1","b2","b3","b4","b5","b6","b7","mpf","if","wf"])
+    df['mpf'][df['b1'] < -2] = -9999
+    df['if'][df['b1'] < -2] = -9999
+    df['wf'][df['b1'] < -2] = -9999
+    #record to mysql
+    with open(p['result_path']+os.path.basename(tf), 'a') as f:
+        df.to_csv(f, sep=',', encoding='utf-8',index=False)
 
 def main():
     logging.basicConfig(filename='testing.log', level=logging.INFO)
@@ -110,7 +120,7 @@ def main():
     logging.info('Testing with Model: ' + str(p['model_id']))
     #model_test(p)
     #dual_model(p)
-    arctic_test(p)
+    fast_test(p)
     #sqlwrite(p['result_path'], p['test_result_csv'], p['csvtosql'])
     os.system('espeak "done"')
 
